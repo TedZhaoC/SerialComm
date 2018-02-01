@@ -222,29 +222,35 @@ void main(int argc,char **argv)
 			//1. write data as well
 			//	SerialWrite(&port,(const char*) ch,1); 
 
-			serial_write_Buf[0] = ch;
+			switch(ch) {
+				case 'A'  :
+				case 'a'  :
+					strcpy(serial_write_Buf, "Send command A\n"); // ascii or binary command data
+					if (len = SerialWrite(&port,serial_write_Buf,strlen(serial_write_Buf)) > 0)
+						printf("Send 1111 %d\n", len);
+					else 
+						printf("Fail to send 111 %d\n", len);
 
-			//strcpy(serial_write_Buf, ch); // ascii or binary command data
-			j = 1; // length of command to send
-			len = SerialWrite(&port,serial_write_Buf,j); 
-			printf("Send 1111 %d\n", len);
+	  				break;
 
-/*
-        	if ((j = SerialWrite(&port,(const char*) ch,1)) > 0)
-				printf("Success -- Ted send data out\n");
-			else
-				printf("Failure -- Ted send data out\n");
-*/
+		        case 'B'  :
+		        case 'b'  :
+					strcpy(serial_write_Buf, "Send command BBBB\n"); // ascii or binary command data
+					if (len = SerialWrite(&port,serial_write_Buf,strlen(serial_write_Buf)) > 0)
+						printf("Send 222 %d\n", len);
+					else 
+						printf("Fail to send 222 %d\n", len);
+
+	  				break; 
+				 
+			//	default : /* Optional */
+			}
+
         }
-
-
 		//TODO
 		//1. write data as well
 		//2. save read into a file
 		//3. Antoine requirement for special key for special purposes?
-
-		// send some command out serial port...a
-		// uncomment this and change to whatever command and length
     }
 
     printf("\nexiting program\n\n");
