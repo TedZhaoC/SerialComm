@@ -20,6 +20,8 @@
 #include <time.h>
 
 
+FILE *fp;
+
 struct serial
 {
     struct termios Termios; // saved old settings
@@ -68,6 +70,10 @@ void SerialFree(struct serial *sn)
 
         sn->Stream = 0;
     }
+
+	//Ted TODO
+	// release / close the fd as well
+	fclose(fp);
 }
 
 int SerialInit(struct serial *sn,char *ttyName,int baud,int stopBits,int useHwFlow,int parity,int dataBits)
@@ -142,7 +148,6 @@ void main(int argc,char **argv)
     time_t   t1,t2;
 
 	int len = 0;
-   
  
     if (argc != 3)
       { printf("\nUsage: %s <tty port> <baud>\n\n",argv[0]); exit(1); }
@@ -171,6 +176,11 @@ void main(int argc,char **argv)
     time(&t1);
     printf("\nwaiting for serial data on %s at %d baud, press ESC to exit....\n\n",argv[1],atoi(argv[2])); fflush(stdout); 
 
+
+	fp = fopen("/tmp/test.txt", "a+");
+	fprintf(fp, "This is testing for fprintf...\n");
+	fputs("This is testing for fputs...\n", fp);
+
     for (;;)
     {
         // check for incoming data
@@ -182,14 +192,12 @@ void main(int argc,char **argv)
 				printf("Receiving data : 0x%02x\n",(int)serialBuf[i]);
 				printf("Receiving data : %c\n",(int)serialBuf[i]);
 			}
-			//Ted TODO
-			//2. save read into a file
-			//save received to permanent storage, i.e. file or database  
-			//
-			//...
-			//...
 
-            fflush(stdout);
+			//Ted TODO
+			//save received to permanent storage, i.e. file or database  
+			fputs(serialBuf, fp);
+
+//            fflush(stdout);
         }
 
        
